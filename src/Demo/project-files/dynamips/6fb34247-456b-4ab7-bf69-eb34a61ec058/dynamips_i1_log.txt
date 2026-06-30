@@ -1,0 +1,59 @@
+Apr 30 11:44:31.373 HYPERVISOR: Release 0.2.17-x86/Windows (tag 2017072410)
+Apr 30 11:44:31.373 HYPERVISOR: Started on IP = 192.168.182.1, TCP port = 58604.
+Apr 30 11:44:31.608 HYPERVISOR: exec_cmd: hypervisor version 
+Apr 30 11:44:31.613 HYPERVISOR: exec_cmd: hypervisor working_dir D:\GNS3_PROJECTS\TEST\project-files\dynamips 
+Apr 30 11:44:31.624 GENERAL: working_dir=D:\GNS3_PROJECTS\TEST\project-files\dynamips
+Apr 30 11:44:31.625 HYPERVISOR: exec_cmd: hypervisor working_dir D:\GNS3_PROJECTS\TEST\project-files\dynamips\6fb34247-456b-4ab7-bf69-eb34a61ec058 
+Apr 30 11:44:31.625 GENERAL: working_dir=D:\GNS3_PROJECTS\TEST\project-files\dynamips\6fb34247-456b-4ab7-bf69-eb34a61ec058
+Apr 30 11:44:31.625 HYPERVISOR: exec_cmd: vm create Router1 1 c7200 
+Apr 30 11:44:31.625 VM: VM Router1 created.
+Apr 30 11:44:31.633 HYPERVISOR: exec_cmd: vm set_con_tcp_port Router1 5000 
+Apr 30 11:44:31.633 HYPERVISOR: exec_cmd: c7200 get_mac_addr Router1 
+Apr 30 11:44:31.634 HYPERVISOR: exec_cmd: vm get_status Router1 
+Apr 30 11:44:31.634 HYPERVISOR: exec_cmd: vm slot_add_binding Router1 0 0 C7200-IO-FE 
+Apr 30 11:44:31.634 HYPERVISOR: exec_cmd: vm set_disk0 Router1 0 
+Apr 30 11:44:31.634 HYPERVISOR: exec_cmd: vm set_exec_area Router1 64 
+Apr 30 11:44:31.634 HYPERVISOR: exec_cmd: vm get_status Router1 
+Apr 30 11:44:31.638 HYPERVISOR: exec_cmd: vm set_idle_pc Router1 0x62a89b30 
+Apr 30 11:44:31.639 HYPERVISOR: exec_cmd: vm set_ios Router1 C:/Users/Admin/GNS3/images/IOS/c7200-adventerprisek9-mz.152-4.S6.image 
+Apr 30 11:44:31.639 HYPERVISOR: exec_cmd: c7200 set_mac_addr Router1 ca01.1f88.0000 
+Apr 30 11:44:31.642 HYPERVISOR: exec_cmd: vm set_nvram Router1 512 
+Apr 30 11:44:31.643 HYPERVISOR: exec_cmd: vm set_ram Router1 512 
+Apr 30 11:44:31.643 HYPERVISOR: exec_cmd: vm get_status Router1 
+Apr 30 11:44:31.643 HYPERVISOR: exec_cmd: vm slot_add_binding Router1 1 0 PA-2FE-TX 
+Apr 30 11:44:31.643 HYPERVISOR: exec_cmd: vm get_status Router1 
+Apr 30 11:44:31.645 HYPERVISOR: exec_cmd: vm slot_add_binding Router1 2 0 PA-GE 
+Apr 30 11:44:32.424 HYPERVISOR: exec_cmd: nio create_udp udp-b62f09b7-e718-404e-a9d3-9cc28d32dd69 10002 127.0.0.1 10003 
+Apr 30 11:44:32.692 HYPERVISOR: exec_cmd: vm slot_add_nio_binding Router1 0 0 udp-b62f09b7-e718-404e-a9d3-9cc28d32dd69 
+Apr 30 11:44:32.693 HYPERVISOR: exec_cmd: vm get_status Router1 
+Apr 30 11:44:33.075 HYPERVISOR: exec_cmd: nio create_udp udp-4d88c5f6-aee2-4da6-a21a-9e99c1efbb02 10005 127.0.0.1 10006 
+Apr 30 11:44:33.145 HYPERVISOR: exec_cmd: vm slot_add_nio_binding Router1 1 0 udp-4d88c5f6-aee2-4da6-a21a-9e99c1efbb02 
+Apr 30 11:44:33.145 HYPERVISOR: exec_cmd: vm get_status Router1 
+Apr 30 11:44:33.205 HYPERVISOR: exec_cmd: nio create_udp udp-3f6803be-5974-4847-9604-df483604a984 10008 127.0.0.1 10009 
+Apr 30 11:44:33.205 HYPERVISOR: exec_cmd: vm slot_add_nio_binding Router1 1 1 udp-3f6803be-5974-4847-9604-df483604a984 
+Apr 30 11:44:33.205 HYPERVISOR: exec_cmd: vm get_status Router1 
+Apr 30 11:49:51.982 HYPERVISOR: exec_cmd: vm create Ghost 0 c7200 
+Apr 30 11:49:52.054 VM: VM Ghost created.
+Apr 30 11:49:52.054 HYPERVISOR: exec_cmd: vm set_ios Ghost C:/Users/Admin/GNS3/images/IOS/c7200-adventerprisek9-mz.152-4.S6.image 
+Apr 30 11:49:52.054 HYPERVISOR: exec_cmd: vm set_ghost_status Ghost 1 
+Apr 30 11:49:52.054 HYPERVISOR: exec_cmd: vm set_ghost_file Ghost D:\GNS3_PROJECTS\TEST\project-files\dynamips\c7200-adventerprisek9-mz.152-4.S6.image-512.ghost 
+Apr 30 11:49:52.054 HYPERVISOR: exec_cmd: vm set_ram Ghost 512 
+Apr 30 11:49:52.054 HYPERVISOR: exec_cmd: vm get_status Ghost 
+Apr 30 11:49:52.054 HYPERVISOR: exec_cmd: vm set_config Ghost configs\i0_startup-config.cfg 
+Apr 30 11:49:52.060 HYPERVISOR: exec_cmd: vm start Ghost 
+Apr 30 11:49:52.536 HYPERVISOR: exec_cmd: vm get_status Ghost 
+Apr 30 11:49:52.536 HYPERVISOR: exec_cmd: vm stop Ghost 
+Apr 30 11:49:52.802 VM: VM Ghost shutdown.
+Apr 30 11:49:52.802 HYPERVISOR: exec_cmd: vm extract_config Ghost 
+Apr 30 11:49:52.804 HYPERVISOR: exec_cmd: vm clean_delete Ghost 
+Apr 30 11:49:52.804 VM: VM Ghost destroyed.
+Apr 30 11:49:52.812 HYPERVISOR: exec_cmd: vm set_ghost_status Router1 2 
+Apr 30 11:49:52.812 HYPERVISOR: exec_cmd: vm set_ghost_file Router1 D:\GNS3_PROJECTS\TEST\project-files\dynamips\c7200-adventerprisek9-mz.152-4.S6.image-512.ghost 
+Apr 30 11:49:52.812 HYPERVISOR: exec_cmd: vm get_status Router1 
+Apr 30 11:49:52.816 HYPERVISOR: exec_cmd: vm set_config Router1 configs\i1_startup-config.cfg 
+Apr 30 11:49:52.816 HYPERVISOR: exec_cmd: vm start Router1 
+Apr 30 11:50:23.118 HYPERVISOR: exec_cmd: vm extract_config Router1 
+Apr 30 21:16:49.419 HYPERVISOR: Stopped.
+Apr 30 21:16:49.528 VM: VM Router1 shutdown.
+Apr 30 21:16:49.528 VM: VM Router1 destroyed.
+Apr 30 21:16:49.529 GENERAL: reset done.

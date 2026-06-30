@@ -1,0 +1,777 @@
+KỊCH BẢN TEST NHANH THEO BÁO CÁO GNS3
+
+============================================================
+0. NGUYÊN TẮC KHI TRÌNH BÀY
+============================================================
+
+Mục tiêu khi demo:
+Chứng minh mô hình LAN doanh nghiệp hoạt động được các phần chính:
+VLAN, DHCP, Inter-VLAN Routing, OSPF, NAT/PAT, DNS, Web, SMB, RDP, ACL, Port Security, HSRP, STP/PVST và dự phòng Internet.
+
+Thứ tự demo nên đi:
+1. Kiểm tra tổng quan Core/OSPF/route
+2. Kiểm tra PC nhận IP theo VLAN
+3. Kiểm tra Internet, DNS, Web, SMB, RDP
+4. Kiểm tra ACL theo từng VLAN
+5. Kiểm tra Port Security
+6. Kiểm tra dự phòng Internet
+7. Kiểm tra HSRP
+8. Kiểm tra STP/PVST
+
+
+============================================================
+1. KIỂM TRA TỔNG QUAN CORE / OSPF / ROUTE
+============================================================
+
+Node cần mở:
+Switch_L3-1
+Switch_L3-2
+Router Internet1
+Router Internet2
+
+Lệnh kiểm tra nhanh:
+
+show ip interface brief
+show ip ospf neighbor
+show ip route
+show ip route 0.0.0.0
+
+Kết quả cần nhìn:
+
+show ip interface brief:
+Các cổng/subinterface phải up/up.
+
+show ip ospf neighbor:
+Switch_L3-1 chỉ nên bắt neighbor qua link định tuyến, không bắt neighbor qua VLAN user.
+Switch_L3-2 chỉ nên bắt neighbor qua link định tuyến, không bắt neighbor qua VLAN user.
+Không nên còn neighbor trên các interface:
+Ethernet0/2.10
+Ethernet0/2.20
+Ethernet0/2.30
+Ethernet0/2.40
+Ethernet0/2.99
+
+show ip route:
+C = mạng kết nối trực tiếp
+L = địa chỉ IP của chính cổng/interface
+O = mạng học được từ OSPF
+O*E2 0.0.0.0/0 = đường mặc định ra Internet được học từ OSPF
+
+Khi Router Internet1 đang bật:
+Đường ra Internet chính thường đi qua Router Internet1.
+Có thể thấy next-hop 10.0.13.2 trong traceroute.
+
+Khi Router Internet1 bị tắt:
+Switch_L3-1 phải học default route dự phòng qua Switch_L3-2.
+Kết quả đẹp trên Switch_L3-1:
+O*E2 0.0.0.0/0 via 10.0.12.2
+
+Câu nói khi trình bày:
+Đầu tiên em kiểm tra trạng thái các interface, quan hệ láng giềng OSPF và bảng định tuyến. Các tuyến OSPF cho thấy các thiết bị Layer 3 đã học được mạng nội bộ và tuyến mặc định ra Internet.
+
+============================================================
+2. BẢNG IP VLAN CẦN NHỚ NHANH
+============================================================
+
+VLAN 10 - Nhân sự
+Network: 192.168.1.0/26
+Dải dùng được: 192.168.1.1 đến 192.168.1.62
+Broadcast: 192.168.1.63
+Gateway HSRP thường dùng: 192.168.1.1
+IP thật Core thường gặp: 192.168.1.2 và 192.168.1.3
+
+VLAN 20 - Kế toán
+Network: 192.168.1.64/27
+Dải dùng được: 192.168.1.65 đến 192.168.1.94
+Broadcast: 192.168.1.95
+Gateway HSRP thường dùng: 192.168.1.65
+IP thật Core thường gặp: 192.168.1.66 và 192.168.1.67
+
+VLAN 30 - Kỹ thuật
+Network: 192.168.1.96/28
+Dải dùng được: 192.168.1.97 đến 192.168.1.110
+Broadcast: 192.168.1.111
+Gateway HSRP thường dùng: 192.168.1.97
+IP thật Core thường gặp: 192.168.1.98 và 192.168.1.99
+
+VLAN 40 - Giám đốc
+Network: 192.168.1.112/29
+Dải dùng được: 192.168.1.113 đến 192.168.1.118
+Broadcast: 192.168.1.119
+Gateway HSRP thường dùng: 192.168.1.113
+IP thật Core thường gặp: 192.168.1.114 và 192.168.1.115
+
+VLAN 99 - Server
+Network: 192.168.1.120/29
+Dải dùng được: 192.168.1.121 đến 192.168.1.126
+Broadcast: 192.168.1.127
+Server Windows Server 2019: 192.168.1.122
+
+Lưu ý:
+Khi dùng tracert, hop đầu tiên có thể hiện IP thật của Core Active như 192.168.1.66 hoặc 192.168.1.98 thay vì Virtual IP. Đây là bình thường vì thiết bị active trả lời gói traceroute bằng IP thật của interface.
+
+============================================================
+3. KIỂM TRA VLAN / DHCP / GATEWAY
+============================================================
+
+Node cần mở:
+PC hoặc Windows Client trong VLAN 10, 20, 30, 40
+
+Lệnh trên Windows Client:
+
+ipconfig
+ipconfig /all
+
+Nếu muốn xin lại IP từ DHCP:
+
+ipconfig /release
+ipconfig /renew
+ipconfig
+
+Lệnh trên VPCS nếu có dùng VPCS:
+
+show ip
+dhcp
+show ip
+
+Kết quả cần đạt:
+PC nhận đúng IP thuộc VLAN của mình.
+Subnet mask đúng với dải VLAN.
+Default Gateway đúng với gateway HSRP của VLAN.
+DNS Server trỏ về Windows Server nếu đang dùng DNS nội bộ.
+
+Test nhanh gateway:
+
+ping <gateway-của-VLAN>
+
+Ví dụ VLAN20:
+
+ping 192.168.1.65
+
+Ví dụ VLAN30:
+
+ping 192.168.1.97
+
+Câu nói khi trình bày:
+Máy trạm trong từng VLAN nhận địa chỉ IP đúng dải mạng thông qua DHCP và có gateway riêng theo từng VLAN. Điều này chứng minh phần VLAN, DHCP và gateway đã hoạt động.
+
+============================================================
+4. KIỂM TRA INTERNET / NAT / PAT
+============================================================
+
+Node cần mở:
+PC bất kỳ trong VLAN 10, 20, 30 hoặc 40
+Router Internet1
+Router Internet2
+
+Lệnh trên PC:
+
+ping 8.8.8.8 -t
+tracert 8.8.8.8
+
+Lệnh trên Router Internet:
+
+show ip nat translations
+show ip interface brief
+
+Nếu show ip nat translations chưa hiện:
+Trên PC chạy ping liên tục:
+
+ping 8.8.8.8 -t
+
+Sau đó qua Router Internet gõ lại:
+
+show ip nat translations
+
+Kết quả cần đạt:
+PC ping được 8.8.8.8.
+NAT/PAT có phiên dịch địa chỉ.
+Inside local là IP thật của PC trong LAN, ví dụ 192.168.1.102.
+Inside global là IP sau khi NAT ra ngoài, ví dụ 192.168.42.37 hoặc 192.168.42.82.
+
+Thông tin đã kiểm tra trong mô hình:
+Router Internet1 có cổng outside FastEthernet0/0: 192.168.42.82
+Router Internet1 có NAT overload:
+ip nat inside source list 1 interface FastEthernet0/0 overload
+
+Khi PC đi qua Router Internet1:
+IP nội bộ 192.168.1.x được NAT/PAT thành IP ngoài của Router Internet1, ví dụ 192.168.42.82.
+
+Khi PC đi qua Router Internet2:
+IP nội bộ 192.168.1.x được NAT/PAT thành IP ngoài của Router Internet2, ví dụ 192.168.42.37.
+
+Giải thích nhanh dòng NAT:
+Inside local = IP thật của PC trong LAN
+Inside global = IP sau khi NAT/PAT ra ngoài
+Outside local/global = IP đích ngoài Internet
+
+Nếu thấy dạng :1024 trong bảng NAT:
+Với TCP/UDP, phần sau dấu hai chấm là port.
+Với ICMP/ping, đó là số định danh phiên ICMP, không phải port dịch vụ.
+NAT/PAT dùng số này để phân biệt nhiều phiên ping cùng lúc.
+
+Câu nói khi trình bày:
+Các máy trạm dùng IP riêng 192.168.1.x nên khi ra Internet phải được NAT/PAT tại Router Internet. Bảng NAT cho thấy IP nội bộ đã được chuyển đổi sang IP đại diện ở cổng outside của Router.
+
+============================================================
+5. KIỂM TRA DNS / WEB / SMB / RDP
+============================================================
+
+Node cần mở:
+Windows 10 Client
+Windows Server 2019
+
+Tài khoản test:
+Username: Nhanvien
+Password: nv@123
+
+Lệnh trên Windows Client:
+
+ipconfig
+nslookup portal.company.local
+ping 192.168.1.122
+
+Test Web:
+Mở trình duyệt:
+http://192.168.1.122
+http://portal.company.local
+
+Test SMB/File Sharing:
+Mở Run:
+\\192.168.1.122\Public
+
+Test RDP:
+Mở Remote Desktop Connection:
+192.168.1.122
+
+Kết quả cần đạt:
+nslookup portal.company.local trả về IP Server 192.168.1.122.
+Web truy cập được bằng IP và tên miền.
+SMB truy cập được thư mục chia sẻ nếu VLAN được phép.
+RDP chỉ truy cập được từ VLAN được phép theo ACL.
+
+Câu nói khi trình bày:
+Windows Server đóng vai trò cung cấp các dịch vụ nội bộ gồm DNS, Web, SMB/File Sharing và RDP. Máy trạm truy cập dịch vụ theo đúng chính sách phân quyền đã cấu hình.
+
+============================================================
+6. KIỂM TRA ACL THEO VLAN
+============================================================
+
+Node cần mở:
+PC VLAN 10
+PC VLAN 20
+PC VLAN 30
+PC VLAN 40
+Switch_L3/Core đang áp ACL
+
+Lệnh trên PC:
+
+ping 192.168.1.122
+ping 8.8.8.8
+
+Test Web:
+http://192.168.1.122
+http://portal.company.local
+
+Test SMB:
+\\192.168.1.122\Public
+
+Test RDP:
+mstsc
+Địa chỉ: 192.168.1.122
+
+Lệnh trên Core:
+
+show access-lists
+show run | include access-group
+show run | section ip access-list
+
+Kết quả theo chính sách:
+
+VLAN 10:
+Web được
+SMB được nếu chính sách cho phép
+Ping Server bị chặn
+RDP bị chặn
+Internet vẫn được
+
+VLAN 20:
+Web được
+SMB được nếu chính sách cho phép
+Ping Server bị chặn
+RDP bị chặn
+Internet vẫn được
+
+VLAN 30:
+Ping Server được
+Web được
+SMB được
+RDP được
+Internet được
+
+VLAN 40:
+Web được
+SMB được nếu chính sách cho phép
+Ping Server tùy chính sách
+RDP bị chặn
+Internet được
+
+Câu nói khi trình bày:
+ACL được dùng để kiểm soát truy cập từ các VLAN người dùng đến VLAN Server. VLAN kỹ thuật được phép quản trị Server bằng RDP, trong khi các VLAN khác bị hạn chế để tăng an toàn cho hệ thống.
+
+============================================================
+7. KIỂM TRA PORT SECURITY
+============================================================
+
+Node cần mở:
+Switch_L2-1
+Switch_L2-2
+
+Lệnh kiểm tra chung:
+
+show port-security
+show port-security address
+show interfaces status
+
+Lệnh kiểm tra từng cổng theo báo cáo:
+
+show port-security interface ethernet1/0
+show port-security interface ethernet1/1
+show port-security interface ethernet0/2
+show port-security interface ethernet0/3
+show port-security interface ethernet1/2
+
+Kết quả cần đạt:
+Port Security đang bật trên các cổng access cần bảo vệ.
+Maximum MAC thường là 1.
+Sticky MAC học MAC của thiết bị hợp lệ.
+Violation mode có thể là restrict hoặc shutdown tùy VLAN.
+show port-security address hiển thị các MAC đã học sticky.
+
+Nếu thầy hỏi sticky là gì:
+Sticky MAC là cơ chế cho phép switch tự học địa chỉ MAC đầu tiên kết nối vào cổng access và ghi nhận địa chỉ đó như địa chỉ hợp lệ. Khi thiết bị lạ cắm vào, switch sẽ xử lý theo violation mode đã cấu hình.
+
+Nếu thầy hỏi restrict và shutdown khác nhau:
+restrict chặn thiết bị lạ nhưng port vẫn up.
+shutdown đưa port vào err-disabled, mức xử lý mạnh hơn.
+
+Câu nói khi trình bày:
+Port Security giúp hạn chế thiết bị lạ cắm vào các cổng access. Với sticky MAC, switch tự học MAC hợp lệ ban đầu và phát hiện khi có MAC khác xuất hiện trên cùng cổng.
+
+============================================================
+8. KIỂM TRA DỰ PHÒNG INTERNET
+============================================================
+
+Mục tiêu:
+Chứng minh Router Internet1 là đường chính và Router Internet2 là đường dự phòng.
+Khi Router Internet1 lỗi, PC vẫn ra Internet qua Router Internet2.
+Khi Router Internet1 bật lại, hệ thống quay về đường chính.
+Khi Router Internet2 lỗi, đường chính qua Router Internet1 vẫn hoạt động.
+
+------------------------------------------------------------
+8.1 Kiểm tra trạng thái bình thường
+------------------------------------------------------------
+
+Trạng thái:
+Router Internet1: bật
+Router Internet2: bật
+
+Trên PC VLAN20 hoặc VLAN30:
+
+tracert 8.8.8.8
+ping 8.8.8.8
+
+Kết quả mong muốn khi đi đường chính:
+Có hop 10.0.13.2.
+10.0.13.2 là Router Internet1.
+
+Ví dụ đường đi:
+PC VLAN20 -> 192.168.1.66 -> 10.0.13.2 -> Internet
+
+Câu nói:
+Khi cả hai Router Internet hoạt động, hệ thống ưu tiên đi qua Router Internet1 là đường chính.
+
+------------------------------------------------------------
+8.2 Kiểm thử sự cố Router Internet1
+------------------------------------------------------------
+
+Bước 1:
+Tắt Router Internet1 trong GNS3.
+
+Bước 2:
+Đợi 30 đến 60 giây để OSPF hội tụ.
+
+Bước 3:
+Trên PC VLAN20 gõ:
+
+tracert 8.8.8.8
+ping 8.8.8.8
+
+Kết quả mong muốn:
+Không còn đi qua 10.0.13.2.
+Đường đi chuyển qua Switch_L3-2 và Router Internet2.
+Ping 8.8.8.8 thành công.
+
+Ví dụ kết quả đã test:
+PC VLAN20 -> 192.168.1.66 -> 10.0.12.2 -> 10.0.23.2 -> Router Internet2 -> Internet
+
+Lệnh kiểm tra thêm trên Switch_L3-1:
+
+show ip route 0.0.0.0
+
+Kết quả mong muốn:
+O*E2 0.0.0.0/0 via 10.0.12.2
+
+Bước 4:
+Bật lại Router Internet1.
+
+Bước 5:
+Đợi 30 đến 60 giây rồi test lại:
+
+tracert 8.8.8.8
+ping 8.8.8.8
+
+Kết quả mong muốn:
+Đường đi quay lại Router Internet1.
+Có hop 10.0.13.2.
+
+Câu nói:
+Khi Router Internet1 bị tắt, OSPF cập nhật lại tuyến mặc định và chuyển lưu lượng sang Router Internet2. Khi Router Internet1 hoạt động lại, hệ thống quay về đường chính.
+
+------------------------------------------------------------
+8.3 Kiểm thử sự cố Router Internet2
+------------------------------------------------------------
+
+Trạng thái trước khi test:
+Router Internet1: bật
+Router Internet2: tắt
+
+Bước 1:
+Tắt Router Internet2 trong GNS3.
+
+Bước 2:
+Đợi 30 đến 60 giây.
+
+Bước 3:
+Trên PC VLAN30 gõ:
+
+tracert 8.8.8.8
+ping 8.8.8.8
+
+Kết quả mong muốn:
+PC vẫn ra Internet qua Router Internet1.
+Có hop 10.0.13.2.
+Ping 8.8.8.8 thành công.
+
+Ví dụ kết quả đã test:
+PC VLAN30 -> 192.168.1.98 -> 10.0.12.1 -> 10.0.13.2 -> Router Internet1 -> Internet
+
+Bước 4:
+Bật lại Router Internet2 sau khi test.
+
+Câu nói:
+Router Internet2 là đường dự phòng. Khi Router Internet2 bị tắt, đường chính qua Router Internet1 vẫn hoạt động bình thường nên người dùng không bị ảnh hưởng.
+
+------------------------------------------------------------
+8.4 Kiểm tra NAT/PAT trong tình huống dự phòng Internet
+------------------------------------------------------------
+
+Khi đang ping 8.8.8.8 từ PC:
+
+Trên Router Internet đang được sử dụng gõ:
+
+show ip nat translations
+show ip nat statistics
+
+Nếu đi qua Router Internet1:
+Inside global có thể là 192.168.42.82.
+
+Nếu đi qua Router Internet2:
+Inside global có thể là 192.168.42.37.
+
+Ví dụ dòng NAT đã thấy:
+icmp 192.168.42.37:1024 192.168.1.102:1 8.8.8.8:1 8.8.8.8:1024
+
+Giải thích:
+192.168.1.102 là IP thật của PC VLAN30.
+192.168.42.37 là IP sau khi NAT/PAT ra ngoài.
+8.8.8.8 là IP đích Internet.
+:1024 là số định danh phiên NAT/PAT đối với ICMP.
+
+
+
+============================================================
+9. KIỂM TRA HSRP
+============================================================
+
+Node cần mở:
+Switch_L3-1
+Switch_L3-2
+PC trong VLAN cần test
+
+Lệnh kiểm tra trạng thái HSRP:
+
+show standby brief
+
+Kết quả cần nhìn:
+Một Core ở trạng thái Active.
+Core còn lại ở trạng thái Standby.
+Virtual IP đúng với gateway VLAN.
+
+Test HSRP VLAN10:
+Trên Core đang Active của VLAN10:
+
+conf t
+interface ethernet0/2.10
+shutdown
+end
+
+Kiểm tra lại:
+
+show standby brief
+
+Test từ PC VLAN10:
+
+ping 192.168.1.1
+ping 8.8.8.8
+
+Bật lại subinterface:
+
+conf t
+interface ethernet0/2.10
+no shutdown
+end
+
+Kiểm tra preempt:
+
+show standby brief
+
+Lưu ý:
+Có thể thay ethernet0/2.10 bằng subinterface VLAN khác nếu cần test:
+VLAN20: ethernet0/2.20
+VLAN30: ethernet0/2.30
+VLAN40: ethernet0/2.40
+VLAN99: ethernet0/2.99
+
+Nếu thầy hỏi vì sao shutdown subinterface:
+Shutdown subinterface giúp mô phỏng sự cố gateway của riêng một VLAN, từ đó kiểm tra Core dự phòng có tiếp quản Virtual IP hay không.
+
+Nếu thầy hỏi preempt:
+Preempt giúp thiết bị có priority cao hơn giành lại vai trò Active sau khi hoạt động trở lại.
+
+Câu nói khi trình bày:
+HSRP cung cấp gateway ảo cho các VLAN. Khi Core Active gặp sự cố, Core Standby tiếp quản Virtual IP nên máy trạm vẫn giữ nguyên default gateway và tiếp tục hoạt động.
+
+============================================================
+10. KIỂM TRA STP / PVST
+============================================================
+
+Node cần mở:
+Switch_L2-3
+Switch_L2-4
+Các switch Access/Distribution liên quan
+
+Lệnh kiểm tra:
+
+show spanning-tree vlan 10
+show spanning-tree vlan 20
+show spanning-tree vlan 30
+show spanning-tree vlan 40
+show spanning-tree vlan 99
+show spanning-tree summary
+
+Kết quả cần nhìn:
+Root Bridge theo từng VLAN đúng theo thiết kế.
+Cổng chính ở trạng thái Root Forwarding hoặc Designated Forwarding.
+Cổng dự phòng ở trạng thái Alternate Blocking.
+Khi uplink chính bị ngắt, cổng dự phòng chuyển sang Forwarding sau khi STP hội tụ.
+
+Test ngắt uplink Access - Distribution:
+Trên switch Access đúng theo hình báo cáo:
+
+conf t
+interface ethernet0/0
+shutdown
+end
+
+Sau đó test từ PC/VPCS:
+
+ping <gateway>
+ping 8.8.8.8
+
+Bật lại cổng:
+
+conf t
+interface ethernet0/0
+no shutdown
+end
+
+Test ngắt uplink Distribution - Core:
+Chỉ shutdown đúng cổng uplink đã dùng trong báo cáo.
+Ví dụ nếu cổng cần test là ethernet0/x:
+
+conf t
+interface ethernet0/x
+shutdown
+end
+
+Test lại:
+
+ping <gateway>
+ping 8.8.8.8
+
+Bật lại:
+
+conf t
+interface ethernet0/x
+no shutdown
+end
+
+Câu nói khi trình bày:
+STP/PVST giúp chống loop Layer 2 bằng cách chặn một số đường dự phòng. Khi uplink chính gặp sự cố, STP sẽ hội tụ lại và kích hoạt đường thay thế để duy trì kết nối.
+
+
+============================================================
+11. KIỂM TRA SAU KHI TEST XONG
+============================================================
+
+Sau khi test sự cố xong, bật lại tất cả cổng/node đã tắt.
+
+Kiểm tra trên Core:
+
+show ip interface brief
+show ip ospf neighbor
+show ip route 0.0.0.0
+show standby brief
+
+Kiểm tra trên PC:
+
+ipconfig
+ping <gateway>
+ping 8.8.8.8
+nslookup portal.company.local
+
+Kiểm tra dịch vụ:
+
+http://portal.company.local
+\\192.168.1.122\Public
+Remote Desktop: 192.168.1.122
+
+Nếu tất cả đều ổn:
+Lưu cấu hình trên các thiết bị đã chỉnh:
+
+wr
+
+============================================================
+12. CÂU TRẢ LỜI NHANH 
+============================================================
+
+Hỏi: Vì sao có cảnh báo RAM trên GNS3?
+Trả lời:
+Đó là cảnh báo tài nguyên máy host không đủ RAM để chạy cùng lúc các máy ảo Windows. Đây không phải lỗi cấu hình mạng. Có thể khắc phục bằng cách tắt bớt node, giảm RAM máy ảo hoặc nâng RAM máy host.
+
+Hỏi: Vì sao phải dùng VLAN?
+Trả lời:
+VLAN giúp chia mạng theo phòng ban, giảm broadcast domain và hỗ trợ áp dụng chính sách truy cập riêng cho từng nhóm người dùng.
+
+Hỏi: HSRP dùng để làm gì?
+Trả lời:
+HSRP tạo gateway ảo cho VLAN. Khi Core Active gặp sự cố, Core Standby sẽ tiếp quản Virtual IP để máy trạm vẫn dùng gateway cũ và tiếp tục hoạt động.
+
+Hỏi: STP/PVST dùng để làm gì?
+Trả lời:
+STP/PVST chống loop Layer 2 và đặt một số đường dự phòng ở trạng thái blocking. Khi đường chính gặp sự cố, STP sẽ hội tụ lại và chuyển sang đường dự phòng.
+
+Hỏi: OSPF dùng để làm gì?
+Trả lời:
+OSPF giúp các thiết bị Layer 3 tự động học đường đi trong hệ thống. Trong mô hình này, OSPF còn hỗ trợ cập nhật tuyến mặc định khi chuyển hướng Internet dự phòng.
+
+Hỏi: Vì sao phải cấu hình passive-interface trên VLAN user?
+Trả lời:
+Để VLAN vẫn được quảng bá trong OSPF nhưng không hình thành neighbor trên mạng người dùng. Cách này giúp OSPF ổn định hơn và tránh học default route qua các next-hop nội bộ không cần thiết.
+
+Hỏi: NAT/PAT dùng để làm gì?
+Trả lời:
+NAT/PAT chuyển đổi IP nội bộ 192.168.1.x sang IP đại diện của Router Internet để các máy trạm có thể truy cập Internet.
+
+Hỏi: Inside local và Inside global là gì?
+Trả lời:
+Inside local là IP thật của máy trong LAN. Inside global là IP sau khi được NAT/PAT ra ngoài Internet.
+
+Hỏi: :1024 trong bảng NAT là gì?
+Trả lời:
+Với ICMP, đó là số định danh phiên NAT/PAT, không phải port dịch vụ. Router dùng số này để phân biệt nhiều phiên ping khác nhau.
+
+Hỏi: ACL dùng để làm gì?
+Trả lời:
+ACL dùng để kiểm soát truy cập giữa các VLAN và Server. Ví dụ VLAN kỹ thuật được phép RDP Server, còn VLAN người dùng thông thường bị chặn RDP.
+
+Hỏi: Port Security sticky là gì?
+Trả lời:
+Sticky MAC cho phép switch tự học MAC hợp lệ đầu tiên trên cổng access. Nếu thiết bị lạ cắm vào, switch sẽ xử lý theo chế độ violation đã cấu hình.
+
+Hỏi: Restrict và shutdown trong Port Security khác nhau thế nào?
+Trả lời:
+Restrict chặn MAC lạ nhưng port vẫn hoạt động. Shutdown đưa port vào err-disabled, mức bảo vệ mạnh hơn.
+
+Hỏi: Khi Router Internet1 tắt thì hệ thống đi đâu?
+Trả lời:
+OSPF cập nhật lại tuyến mặc định và chuyển lưu lượng sang Router Internet2. Kết quả traceroute cho thấy đường đi qua 10.0.12.2 và 10.0.23.2.
+
+Hỏi: Khi Router Internet2 tắt thì có ảnh hưởng không?
+Trả lời:
+Không ảnh hưởng đến đường chính. Hệ thống vẫn đi qua Router Internet1, thể hiện qua hop 10.0.13.2 trong traceroute.
+
+============================================================
+13. THỨ TỰ DEMO NGẮN GỌN TRƯỚC HỘI ĐỒNG
+============================================================
+
+Bước 1:
+show ip ospf neighbor
+show ip route 0.0.0.0
+show standby brief
+
+Bước 2:
+Trên PC:
+ipconfig
+ping gateway
+ping 8.8.8.8
+
+Bước 3:
+Test DNS/Web:
+nslookup portal.company.local
+http://portal.company.local
+
+Bước 4:
+Test SMB/RDP:
+\\192.168.1.122\Public
+Remote Desktop 192.168.1.122
+
+Bước 5:
+Test ACL:
+VLAN10 hoặc VLAN20 ping/RDP Server bị chặn.
+VLAN30 ping/RDP Server được.
+
+Bước 6:
+Test HSRP:
+shutdown subinterface VLAN trên Core Active.
+show standby brief.
+PC vẫn ping gateway được.
+no shutdown để khôi phục.
+
+Bước 7:
+Test STP/uplink:
+shutdown một uplink đã test trong báo cáo.
+PC vẫn ping gateway/Internet được sau khi hội tụ.
+no shutdown để khôi phục.
+
+Bước 8:
+Test dự phòng Internet:
+Tắt Router Internet1.
+Đợi 30 đến 60 giây.
+tracert 8.8.8.8.
+ping 8.8.8.8.
+Bật lại Router Internet1.
+Kiểm tra đường đi quay lại 10.0.13.2.
+
+
