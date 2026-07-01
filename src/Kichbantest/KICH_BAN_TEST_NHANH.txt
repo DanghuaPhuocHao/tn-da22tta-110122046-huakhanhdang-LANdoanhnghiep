@@ -32,6 +32,10 @@ Router Internet2
 Lệnh kiểm tra nhanh:
 
 show ip interface brief
+show ip nat translations
+
+Số 1024 sau dấu hai chấm không phải là IP mà là mã định danh phiên NAT/PAT. Router sử dụng mã này để phân biệt các phiên ICMP khi nhiều máy trong LAN cùng đi ra Internet qua một địa chỉ IP ngoài.
+
 show ip ospf neighbor
 show ip route
 show ip route 0.0.0.0
