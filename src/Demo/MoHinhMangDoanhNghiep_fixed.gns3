@@ -193,8 +193,8 @@
                 "locked": false,
                 "rotation": 0,
                 "svg": "<svg width=\"361\" height=\"71\"><text font-family=\"Segoe UI\" font-size=\"12.0\" font-weight=\"bold\" fill=\"#000000\" fill-opacity=\"1.0\">ip 192.168.1.100 - 192.168.1.101 - 192.168.1.102\nsubnet mask 255.255.255.240\ngateway 192.168.1.97</text></svg>",
-                "x": 621,
-                "y": 409,
+                "x": 606,
+                "y": 402,
                 "z": 4
             },
             {
@@ -202,7 +202,7 @@
                 "locked": false,
                 "rotation": 0,
                 "svg": "<svg width=\"228\" height=\"71\"><text font-family=\"Segoe UI\" font-size=\"12.0\" font-weight=\"bold\" fill=\"#000000\" fill-opacity=\"1.0\">ip 192.168.1.117\nsubnet mask 255.255.255.248\ngateway 192.168.1.113</text></svg>",
-                "x": 892,
+                "x": 890,
                 "y": 194,
                 "z": 2
             },
@@ -211,8 +211,8 @@
                 "locked": false,
                 "rotation": 0,
                 "svg": "<svg width=\"228\" height=\"92\"><text font-family=\"Segoe UI\" font-size=\"12.0\" font-weight=\"bold\" fill=\"#000000\" fill-opacity=\"1.0\">ip 192.168.1.122\nsubnet mask 255.255.255.248\ngateway 192.168.1.121\n</text></svg>",
-                "x": 745,
-                "y": -111,
+                "x": 750,
+                "y": -99,
                 "z": 2
             },
             {
@@ -292,8 +292,8 @@
                 "locked": false,
                 "rotation": 0,
                 "svg": "<svg width=\"40\" height=\"24\"><text font-family=\"TypeWriter\" font-size=\"10.0\" font-weight=\"bold\" fill=\"#000000\" fill-opacity=\"1.0\">e0/2</text></svg>",
-                "x": 613,
-                "y": 511,
+                "x": 595,
+                "y": 503,
                 "z": 2
             },
             {
@@ -301,8 +301,8 @@
                 "locked": false,
                 "rotation": 0,
                 "svg": "<svg width=\"40\" height=\"24\"><text font-family=\"TypeWriter\" font-size=\"10.0\" font-weight=\"bold\" fill=\"#000000\" fill-opacity=\"1.0\">e1/2</text></svg>",
-                "x": -88,
-                "y": 510,
+                "x": -98,
+                "y": 505,
                 "z": 2
             },
             {
@@ -1241,7 +1241,7 @@
                             "style": "font-family: TypeWriter;font-size: 10.0;font-weight: bold;fill: #000000;fill-opacity: 1.0;",
                             "text": "e0/0",
                             "x": 42,
-                            "y": -12
+                            "y": -32
                         },
                         "node_id": "4e8f9991-7f98-4daf-8bb1-76316b7f9242",
                         "port_number": 0
@@ -1379,8 +1379,8 @@
                 "symbol": ":/symbols/multilayer_switch.svg",
                 "template_id": "af098b16-04e7-4694-a2f5-8088599f199d",
                 "width": 51,
-                "x": -222,
-                "y": 200,
+                "x": -220,
+                "y": 203,
                 "z": 1
             },
             {
@@ -1963,8 +1963,8 @@
                 "symbol": ":/symbols/vpcs_guest.svg",
                 "template_id": "19021f99-e36f-394d-b4a1-8aaa902ab9cc",
                 "width": 65,
-                "x": -605,
-                "y": 405,
+                "x": -583,
+                "y": 409,
                 "z": 1
             },
             {
