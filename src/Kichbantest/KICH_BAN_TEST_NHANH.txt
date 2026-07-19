@@ -344,6 +344,7 @@ show port-security interface ethernet1/1
 show port-security interface ethernet0/2
 show port-security interface ethernet0/3
 show port-security interface ethernet1/2
+show int e1/2 status
 
 lệnh xóa sticky mac trên 1 port:
 no switchport port-security mac-address sticky xxxx.xxxx.xxxx

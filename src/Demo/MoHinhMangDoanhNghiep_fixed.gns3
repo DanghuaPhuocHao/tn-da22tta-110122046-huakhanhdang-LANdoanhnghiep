@@ -1155,42 +1155,6 @@
             },
             {
                 "filters": {},
-                "link_id": "309c2f23-2956-49e1-bd17-485ae9e630d7",
-                "link_style": {
-                    "color": "#000000",
-                    "type": 1,
-                    "width": 2
-                },
-                "nodes": [
-                    {
-                        "adapter_number": 1,
-                        "label": {
-                            "rotation": 0,
-                            "style": "font-family: TypeWriter;font-size: 10.0;font-weight: bold;fill: #000000;fill-opacity: 1.0;",
-                            "text": "e1/2",
-                            "x": 34,
-                            "y": 62
-                        },
-                        "node_id": "4e8f9991-7f98-4daf-8bb1-76316b7f9242",
-                        "port_number": 2
-                    },
-                    {
-                        "adapter_number": 0,
-                        "label": {
-                            "rotation": 0,
-                            "style": "font-family: TypeWriter;font-size: 10.0;font-weight: bold;fill: #000000;fill-opacity: 1.0;",
-                            "text": "e0",
-                            "x": 23,
-                            "y": -9
-                        },
-                        "node_id": "0faacd60-ed3b-4304-af2c-b2fd712a706c",
-                        "port_number": 0
-                    }
-                ],
-                "suspend": false
-            },
-            {
-                "filters": {},
                 "link_id": "2ee5374f-5b17-473d-a435-d3015272ed73",
                 "link_style": {
                     "color": "#000000",
@@ -1257,6 +1221,42 @@
                         },
                         "node_id": "0b693492-eecb-4a5c-bd17-0a500a4b3f59",
                         "port_number": 3
+                    }
+                ],
+                "suspend": false
+            },
+            {
+                "filters": {},
+                "link_id": "b276b214-61d5-4937-91dd-fcde1e871c07",
+                "link_style": {
+                    "color": "#000000",
+                    "type": 1,
+                    "width": 2
+                },
+                "nodes": [
+                    {
+                        "adapter_number": 1,
+                        "label": {
+                            "rotation": 0,
+                            "style": "font-family: TypeWriter;font-size: 10.0;font-weight: bold;fill: #000000;fill-opacity: 1.0;",
+                            "text": "e1/2",
+                            "x": 35,
+                            "y": 62
+                        },
+                        "node_id": "4e8f9991-7f98-4daf-8bb1-76316b7f9242",
+                        "port_number": 2
+                    },
+                    {
+                        "adapter_number": 0,
+                        "label": {
+                            "rotation": 0,
+                            "style": "font-family: TypeWriter;font-size: 10.0;font-weight: bold;fill: #000000;fill-opacity: 1.0;",
+                            "text": "e0",
+                            "x": 22,
+                            "y": -9
+                        },
+                        "node_id": "0faacd60-ed3b-4304-af2c-b2fd712a706c",
+                        "port_number": 0
                     }
                 ],
                 "suspend": false
@@ -2001,8 +2001,8 @@
                 "symbol": ":/symbols/vmware_guest.svg",
                 "template_id": "dd399b71-bb92-4a05-9f29-7ea7216de068",
                 "width": 65,
-                "x": -185,
-                "y": 413,
+                "x": -172,
+                "y": 408,
                 "z": 1
             },
             {
@@ -2039,8 +2039,8 @@
                 "symbol": ":/symbols/vmware_guest.svg",
                 "template_id": "237241d3-f82d-4c06-b89d-477251e205f7",
                 "width": 65,
-                "x": -873,
-                "y": -351,
+                "x": -872,
+                "y": -337,
                 "z": 1
             },
             {
